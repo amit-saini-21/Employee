@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @page {
+            size: A4;
+            margin: 30px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .wrap {
+            word-wrap: break-word;
+            white-space: pre-line;
+        }
+
+        .photo {
+            width: 60px;
+            height: 60px;
+        }
+
+        img {
+            width: 60px;
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Employee Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Department</th>
+                <th>Joining Date</th>
+                <th>Salary</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in data %}
+            <tr>
+                <td>
+                    {% if emp.Photo %}
+                        <img src="data:image/jpeg;base64,{{ emp.Photo }}">
+                    {% else %}
+                        No Photo
+                    {% endif %}
+                </td>
+                <td class="wrap">{{ emp.Name }}</td>
+                <td class="wrap">{{ emp.Email }}</td>
+                <td class="wrap">{{ emp.Phone }}</td>
+                <td class="wrap">{{ emp.Department }}</td>
+                <td class="wrap">{{ emp['Joining Date']|reverse }}</td>
+                <td class="wrap">{{ emp.Salary }}</td>
+                <td class="wrap">{{ emp.Address }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

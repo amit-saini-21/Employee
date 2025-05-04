@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            margin-top: 40px;
+        }
+
+        /* Header */
+        .navbar {
+            background-color: #5e72e4;
+            border-radius: 8px;
+        }
+
+        .navbar-brand {
+            color: #fff !important;
+            font-size: 1.7rem;
+            font-weight: 600;
+        }
+
+        .navbar-brand:hover {
+            color: #f8f9fa;
+            text-decoration: none;
+        }
+
+        /* Action Buttons */
+        .btn-custom {
+            background-color: #5e72e4;
+            color: white;
+            border-radius: 50px;
+            padding: 12px 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-custom:hover {
+            background-color: #4b64c0;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Glass Effect */
+        .card {
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        /* Table */
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #5e72e4;
+            color: white;
+        }
+
+        .table td {
+            background-color: #ffffff;
+            border-radius: 8px;
+        }
+
+        /* Profile Image */
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Hover Effects */
+        tr:hover {
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .search-input {
+            width: 250px;
+            padding: 10px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            margin-right: 15px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #5e72e4;
+        }
+
+        .actions a {
+            margin-left: 10px;
+            font-weight: 600;
+            color: #5e72e4;
+            transition: color 0.3s;
+        }
+
+        .actions a:hover {
+            color: #4b64c0;
+        }
+
+        .actions form button {
+            background-color: #5e72e4;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .actions form button:hover {
+            background-color: #4b64c0;
+            transform: translateY(-3px);
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/index">Employee Management System</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card">
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="/add_employee" class="btn btn-custom">➕ Add New Employee</a>
+                    <a href="/export_pdf" class="btn btn-custom">📄 Export PDF</a>
+                    <a href="/logout" class="btn btn-custom">Logout🏃🏻‍♂️</a>
+                </div>
+                <form class="d-flex" method="GET" action="/search">
+                    <input class="form-control search-input" type="search" name="query" placeholder="Search by name or department..." aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">🔍</button>
+                </form>
+            </div>
+
+            <!-- Employee Table -->
+            <div class="table-responsive mt-4">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Profile</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Department</th>
+                            <th>Joining Date</th>
+                            <th>Salary</th>
+                            <th>Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    {% if query %}
+                    <p>Search results for: <strong>{{ query }}</strong></p>
+                    {% endif %}
+                    <tbody>
+                        {% if data %}
+                        {% for item in data %}
+                        <tr>
+                            <td>
+                                {% if item.Photo %}
+                                    <img src="data:image/jpeg;base64,{{ item.Photo | b64_photo }}" alt="Profile Photo" class="profile-img">
+                                {% else %}
+                                    <span class="text-muted">No Photo</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.Name }}</td>
+                            <td>{{ item.Email }}</td>
+                            <td>{{ item.Phone }}</td>
+                            <td>{{ item.Department }}</td>
+                            <td>{{ item['Joining Date']|reverse }}</td>
+                            <td>{{ item.Salary }}</td>
+                            <td>{{ item.Address }}</td>
+                            <td>
+                                <a href="/edit_employee/{{ item._id }}" class="btn btn-sm btn-warning" style="background-color: #5e72e4;">✏️ Edit</a>
+                                <a href="/delete_employee/{{ item._id }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">🗑️ Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-danger">No results found.</p>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
